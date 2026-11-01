@@ -1,39 +1,86 @@
-# AWS EC2 Linux Web Server
+# AWS EC2 Web Server Deployment (Lab 001)
 
-Deployed and configured a Linux web server on AWS EC2, hosting a custom static webpage using Nginx and monitoring instance performance with CloudWatch.
+Deployed a custom static website on an Amazon EC2 instance running Amazon Linux 2023, using Nginx for web serving, a locked-down security group, and CloudWatch for infrastructure monitoring.
 
-**Technologies:** AWS EC2 | Amazon Linux 2023 | Linux | Nginx | VPC | Security Groups | EBS | CloudWatch
+![Deployed Website](screenshots/deployed-webpage.png)
+
+**Stack:** AWS EC2 · Amazon Linux 2023 · Nginx · CloudWatch · HTML
 
 ## Architecture
 
-Browser → Internet → Security Group → EC2 Instance → Nginx → Custom HTML Website
+```text
+Browser
+   |
+Internet
+   |
+Security Group (lab-001-ssh-access)
+   |
+EC2 Instance (lab-001-ec2)
+   |
+Nginx Web Server
+   |
+Custom HTML Website
 
-CloudWatch monitors EC2 performance metrics independently.
+CloudWatch monitors EC2 CPU utilisation.
+```
 
-## Implementation
+## What I Built
 
-- Provisioned a `t3.micro` EC2 instance with an encrypted 8 GiB gp3 volume.
-- Configured SSH access restricted to my public IP and HTTP access on port 80.
-- Connected to the instance using SSH key-based authentication.
-- Installed and managed Nginx using `dnf` and `systemctl`.
-- Deployed a custom HTML webpage.
-- Inspected Linux memory, disk usage, uptime and system information.
-- Configured a CloudWatch CPU alarm for utilisation above 80% across two consecutive five-minute periods.
+1. Provisioned an EC2 `t3.micro` instance running Amazon Linux 2023.
+2. Configured SSH access and public HTTP access through a security group.
+3. Connected to the instance using SSH key-based authentication.
+4. Installed and configured Nginx using `dnf` and `systemctl`.
+5. Replaced the default Nginx page with a custom HTML website.
+6. Verified public website access in a browser.
+7. Created a CloudWatch alarm on CPU utilisation.
 
 ## Security Configuration
 
-| Access | Port | Source |
-|---|---:|---|
-| SSH | 22 | My public IP (/32) |
-| HTTP | 80 | 0.0.0.0/0 |
+| Port | Protocol | Source | Purpose |
+|---|---|---|---|
+| 22 | SSH | My public IP (`/32`) | Remote administration |
+| 80 | HTTP | `0.0.0.0/0` | Public website access |
 
+- SSH inbound access is restricted to a single IPv4 address, so SSH is not exposed to the internet.
+- HTTP is publicly accessible to serve the website.
+- The security group is named `lab-001-ssh-access` but also holds the HTTP rule. AWS does not allow renaming a security group after creation, so future labs will use names that cover the full purpose.
+- The SSH private key was stored locally and excluded from the repository.
 
+## CloudWatch Monitoring
 
-## Screenshots
+| Setting | Configuration |
+|---|---|
+| Alarm | `lab-001-high-cpu-alarm` |
+| Metric | `CPUUtilization` |
+| Threshold | Greater than 80% |
+| Period | 5 minutes |
+| Evaluation | 2 out of 2 datapoints |
+| Notifications | Not configured |
 
-Add evidence of the running EC2 instance, security group rules, Nginx service, deployed webpage and CloudWatch alarm.
+The alarm monitors sustained high CPU utilisation. SNS email notifications are a planned improvement.
+
+## Troubleshooting
+
+- **Website connection timeout:** Checked the Nginx service status, verified port 80 was listening, reviewed the security group rules and tested connectivity with PowerShell's `Test-NetConnection`.
+- **SSH key permissions:** Corrected Windows private-key file permissions using `icacls` before establishing the SSH connection.
+
+Public IP addresses, account IDs and resource identifiers are redacted in the screenshots.
 
 ## Future Improvements
 
-HTTPS, CloudWatch Agent, SNS notifications and infrastructure automation using Terraform.
+- Add SNS email notifications to the CloudWatch alarm.
+- Configure HTTPS using a TLS certificate.
+- Attach an Elastic IP so the public address survives a stop/start.
+- Install the CloudWatch Agent for memory and disk monitoring.
+- Automate infrastructure provisioning using Terraform.
 
+## Security & Cleanup
+
+Private keys, AWS credentials and account details are not stored in this repository.
+
+When the lab is no longer needed, terminate the EC2 instance and remove associated resources to avoid ongoing AWS charges. Check for remaining EBS volumes and other billable resources after cleanup.
+
+---
+
+**Project:** Lab 001, AWS EC2 Linux Web Server Deployment
+**Focus:** Cloud infrastructure, Linux administration, networking and monitoring.
