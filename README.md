@@ -1,18 +1,39 @@
-# AWS EC2 Web Server Deployment
+# AWS EC2 Linux Web Server
 
-Deployed a custom static website on an AWS EC2 instance running Amazon Linux 2023.
+Deployed and configured a Linux web server on AWS EC2, hosting a custom static webpage using Nginx and monitoring instance performance with CloudWatch.
 
-**Tech stack:** AWS EC2 · Linux · Nginx · CloudWatch · HTML
+**Technologies:** AWS EC2 | Amazon Linux 2023 | Linux | Nginx | VPC | Security Groups | EBS | CloudWatch
 
-### What I did
-- Provisioned and configured an EC2 instance.
-- Set up SSH and HTTP security group rules.
-- Connected to the server using SSH.
-- Installed and configured Nginx.
+## Architecture
+
+Browser → Internet → Security Group → EC2 Instance → Nginx → Custom HTML Website
+
+CloudWatch monitors EC2 performance metrics independently.
+
+## Implementation
+
+- Provisioned a `t3.micro` EC2 instance with an encrypted 8 GiB gp3 volume.
+- Configured SSH access restricted to my public IP and HTTP access on port 80.
+- Connected to the instance using SSH key-based authentication.
+- Installed and managed Nginx using `dnf` and `systemctl`.
 - Deployed a custom HTML webpage.
-- Configured CloudWatch metrics and a CPU utilisation alarm.
+- Inspected Linux memory, disk usage, uptime and system information.
+- Configured a CloudWatch CPU alarm for utilisation above 80% across two consecutive five-minute periods.
 
-### Skills
-AWS infrastructure, Linux administration, networking, web server deployment and cloud monitoring.
+## Security Configuration
 
+| Access | Port | Source |
+|---|---:|---|
+| SSH | 22 | My public IP (/32) |
+| HTTP | 80 | 0.0.0.0/0 |
+
+
+
+## Screenshots
+
+Add evidence of the running EC2 instance, security group rules, Nginx service, deployed webpage and CloudWatch alarm.
+
+## Future Improvements
+
+HTTPS, CloudWatch Agent, SNS notifications and infrastructure automation using Terraform.
 
