@@ -15,4 +15,4 @@ Deployed a custom static website on an AWS EC2 instance running Amazon Linux 202
 ### Skills
 AWS infrastructure, Linux administration, networking, web server deployment and cloud monitoring.
 
-*Beginner hands-on cloud engineering project.*
+
