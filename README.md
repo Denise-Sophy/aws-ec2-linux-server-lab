@@ -78,8 +78,6 @@ Public IP addresses, account IDs and resource identifiers are redacted in the sc
 
 Private keys, AWS credentials and account details are not stored in this repository.
 
-When the lab is no longer needed, terminate the EC2 instance and remove associated resources to avoid ongoing AWS charges. Check for remaining EBS volumes and other billable resources after cleanup.
-
 ---
 
 **Project:** Lab 001, AWS EC2 Linux Web Server Deployment
